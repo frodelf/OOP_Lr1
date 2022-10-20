@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace oopLr1
 {
-    public class GameAccount : Game
+    public class GameAccount
     {
-        private string userName;
-        private int currentRating;
-        private static int gamesCount = 0;
+        private string _userName;
+        private int _currentRating;
+        private static int _gamesCount;
+        private List<Game> _histiryGame = new List<Game>();
+
         public GameAccount(string userName, int currentRating)
         {
             if (currentRating <= 1)
@@ -14,69 +17,57 @@ namespace oopLr1
                 throw new ArgumentOutOfRangeException(nameof(currentRating), "Rating cannot be less than one");
             }
 
-            this.userName = userName;
-            this.currentRating = currentRating;
+            _userName = userName;
+            _currentRating = currentRating;
         }
 
-        public void WinGame(GameAccount account, int Rating)
+        public void WinGame(GameAccount account, int rating)
         {
-            if (Rating <= 0)
+            if (rating <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Rating), "The rating for which they are playing cannot be negative");
+                throw new ArgumentOutOfRangeException(nameof(rating), "The rating for which they are playing cannot be negative");
             }
 
-            this.currentRating += Rating;
-            account.currentRating -= Rating;
+            this._currentRating += rating;
+            account._currentRating -= rating;
 
-            if (account.currentRating <= 1)
+            if (account._currentRating <= 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(this.currentRating), "Rating cannot be less than one");
+                throw new ArgumentOutOfRangeException(nameof(this._currentRating), "Rating cannot be less than one");
             }
-
-            stats.Add(this.userName.ToString());
-            stats.Add("Index: "+ (++gamesCount).ToString());
-            stats.Add("Opponennt: "+account.userName.ToString());
-            stats.Add("Victory");
-            stats.Add("Rating = "+Rating.ToString());
-            stats.Add(this.userName.ToString()+"'s current rating = " + this.currentRating.ToString());
-            stats.Add(account.userName.ToString()+"'s current rating = " + account.currentRating.ToString());
-            stats.Add("");
-
+            
+            _histiryGame.Add(new Game((++_gamesCount), account, "Winner", rating, _currentRating));
         }
 
-        public void LoseGame(GameAccount account, int Rating)
+        public void LoseGame(GameAccount account, int rating)
         {
-            if (Rating <= 0)
+            if (rating <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Rating), "The rating for which they are playing cannot be negative");
+                throw new ArgumentOutOfRangeException(nameof(rating), "The rating for which they are playing cannot be negative");
             }
 
-            this.currentRating -= Rating;
-            account.currentRating += Rating;
+            this._currentRating -= rating;
+            account._currentRating += rating;
 
-            if (this.currentRating <= 1)
+            if (this._currentRating <= 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(this.currentRating), "Rating cannot be less than one");
+                throw new ArgumentOutOfRangeException(nameof(this._currentRating), "Rating cannot be less than one");
             }
-
-            stats.Add(this.userName.ToString());
-            stats.Add("Index: "+ (++gamesCount).ToString());
-            stats.Add("Opponennt: "+account.userName.ToString());
-            stats.Add("Defeat");
-            stats.Add("Rating = "+Rating.ToString());
-            stats.Add(this.userName.ToString()+"'s current rating = " + this.currentRating.ToString());
-            stats.Add(account.userName.ToString()+"'s current rating = " + account.currentRating.ToString());
-            stats.Add("");
+            
+            _histiryGame.Add(new Game((++_gamesCount), account, "Defeat", rating, _currentRating));
         }
 
         public void GetStats()
         {
-            for (int i = 0; i < stats.Count; i++)
+            for (int i = 0; i < _histiryGame.Count; i++)
             {
-                if (stats[i].Equals(this.userName.ToString()))
-                {
-                    for(int j = i + 1; j < i + 8; j++)Console.WriteLine(stats[j]);
-                }
+                Console.WriteLine("ID:"+_histiryGame[i].GamesCount);
+                Console.WriteLine("Opponent: "+_histiryGame[i].Opponent._userName);
+                Console.WriteLine(_histiryGame[i].Result);
+                Console.WriteLine("Rating: "+_histiryGame[i].Rating);
+                Console.WriteLine(_userName+"'s current rating = " + _histiryGame[i].CurrentRating);
+                Console.WriteLine(_histiryGame[i].Opponent._userName+"'s current rating = " + _histiryGame[i].Opponent._currentRating+"\n");
+
             }
         }
     }
